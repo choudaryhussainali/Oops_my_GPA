@@ -3,10 +3,10 @@ import pandas as pd
 import io
 import base64
 import matplotlib.pyplot as plt
+from streamlit_javascript import st_javascript
+
 
 st.set_page_config(page_title="Oops My GPA", page_icon="🤓", layout="wide", initial_sidebar_state="expanded")
-
-
 st.markdown(
     """
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -21,6 +21,7 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
     min-width: 300px;
     max-width: 350px;
 }
+            
 
 /* Sidebar when collapsed */
 [data-testid="stSidebar"][aria-expanded="false"] {
@@ -29,7 +30,7 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
 }
 .feature-card {
     background: white;
-    padding: 15px;
+    padding: 15px 15px 15px 30px;
     margin-top: -3rem;
     text-align: center;
     color: black;
@@ -41,6 +42,25 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
 }
             
 .feature-card:hover {
+    transform: translateY(-5px);
+    transform: scale(1.05);
+    z-index: 1;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.15);
+}
+.feature-card1 {
+    background: white;
+    padding: 15px 15px 15px 30px;
+    margin-top: -3rem;
+    text-align: center;
+    color: black;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 1px solid #e1e8ed;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+            
+.feature-card1:hover {
     transform: translateY(-5px);
     transform: scale(1.05);
     z-index: 1;
@@ -99,6 +119,34 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
 }
 .card {background: #ffffff; padding:18px; border-radius:12px; box-shadow: 0 6px 20px rgba(31, 41, 55, 0.06);}
 .small-muted {color: #6b7280; font-size:13px}
+
+@media (max-width: 768px) {
+        
+    .feature-card1 {
+        background: white;
+        padding: 15px 15px 15px 35px;
+        margin-top: 0rem;
+        text-align: center;
+        color: black;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border: 1px solid #e1e8ed;
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    .feature-card {
+        background: white;
+        padding: 15px 15px 15px 35px;
+        margin-top: -3rem;
+        text-align: center;
+        color: black;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border: 1px solid #e1e8ed;
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+ }
 </style>
 """, unsafe_allow_html=True)
 
@@ -108,7 +156,6 @@ PU_SEMESTER_CREDITS = [16, 16, 17, 18, 17, 17, 16, 18]
 def calculate_current_gpa_from_cgpas(prev_cgpa, prev_credits, new_cgpa, current_credits):
     numerator = (new_cgpa * (prev_credits + current_credits)) - (prev_cgpa * prev_credits)
     return numerator / current_credits
-
 
 
 def dataframe_from_session():
@@ -122,6 +169,7 @@ def download_link(df, filename="cgpa_report.csv"):
     df.to_csv(towrite, index=False)
     towrite.seek(0)
     return towrite
+
 
 with st.sidebar:
     st.markdown("""<div class='header'><i class="fa-solid fa-calculator"></i><div class='app-title'>Oops My GPA 🤓</div></div>""", unsafe_allow_html=True)
@@ -343,7 +391,7 @@ with col1:
 with col2:
 
     st.markdown("""
-    <div class="feature-card">
+    <div class="feature-card1">
         <h3 style="color: #667eea;"><i class="fa-solid fa-chart-line"></i> GPA Chart </h3>
     </div>
     """, unsafe_allow_html=True)
@@ -393,7 +441,7 @@ st.markdown("""
 <div style="text-align: center; padding: 2rem 0; border-top: 1px solid #e2e8f0; margin-top: 2rem;">
     <p style="color: #666; margin: 0;">
         Crafted with ❣ by <strong style="color: #667eea;">CHOUDARY HUSSAIN ALI</strong> | 
-         PU-Affiliated Colleges | Built with Advanced Technology 
+         PU-Affiliated Colleges | Built with PU credits Scheme
     </p>
     <p style="color: #999; font-size: 0.9rem; margin: 0.5rem 0 0 0;">
         Copyright © 2025. All rights reserved. | 
@@ -407,5 +455,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+st_javascript("alert('⚠️ must put a Mail if you got any error');") 
 
 
