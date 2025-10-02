@@ -19,8 +19,8 @@ With interactive UI, professional styling, and chart visualization, the app make
 
 ## 🚀 Live Demo
 
-> Deploy via **Streamlit Cloud** or run locally.
-> *https://oopsmygpa.streamlit.app/*
+* > Deploy via **Streamlit Cloud** or run locally.
+* > *https://oopsmygpa.streamlit.app/*
 
 ---
 
@@ -113,10 +113,10 @@ This project is **proprietary and confidential**. All rights reserved.
 
 ## 📬 Contact
 
-📧 Email: [choudaryhussainali@outlook.com](mailto:choudaryhussainali@outlook.com)
-🌐 GitHub: [choudaryhussainali](https://github.com/choudaryhussainali)
-💼 LinkedIn: [ch-hussain-ali](https://linkedin.com/in/ch-hussain-ali)
-📷 Instagram: [@choudary_hussain_ali](https://www.instagram.com/choudary_hussain_ali/)
+* 📧 Email: [choudaryhussainali@outlook.com](mailto:choudaryhussainali@outlook.com)
+* 🌐 GitHub: [choudaryhussainali](https://github.com/choudaryhussainali)
+* 💼 LinkedIn: [ch-hussain-ali](https://linkedin.com/in/ch-hussain-ali)
+* 📷 Instagram: [@choudary_hussain_ali](https://www.instagram.com/choudary_hussain_ali/)
 
 ---
 
