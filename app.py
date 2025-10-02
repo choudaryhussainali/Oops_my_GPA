@@ -36,7 +36,7 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
     color: black;
     border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-    border: 1px solid #e1e8ed;
+    border: 1px solid #374151;
     margin-bottom: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -55,7 +55,7 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
     color: black;
     border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-    border: 1px solid #e1e8ed;
+    border: 1px solid #374151;
     margin-bottom: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -130,7 +130,7 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
         color: black;
         border-radius: 15px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-        border: 1px solid #e1e8ed;
+        border: 1px solid #374151;
         margin-bottom: 1.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -142,7 +142,7 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
         color: black;
         border-radius: 15px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-        border: 1px solid #e1e8ed;
+        border: 1px solid #374151;
         margin-bottom: 1.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -456,6 +456,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st_javascript("alert('⚠️ must put a Mail if you got any error');") 
+
 
 
 
