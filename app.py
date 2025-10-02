@@ -4,10 +4,8 @@ import io
 import base64
 import matplotlib.pyplot as plt
 
-# ---------- App metadata ----------
 st.set_page_config(page_title="Oops My GPA", page_icon="🤓", layout="wide", initial_sidebar_state="expanded")
 
-# ---------- Styling (small, tasteful) ----------
 
 st.markdown(
     """
@@ -19,6 +17,16 @@ st.markdown("""
 body {background: linear-gradient(180deg,#ffffff,#f7fbff);} 
 .header {display:flex; font-size: 22px; align-items:center; gap:8px}
 .app-title {font-size:28px; font-weight:700}
+[data-testid="stSidebar"][aria-expanded="true"] {
+    min-width: 300px;
+    max-width: 350px;
+}
+
+/* Sidebar when collapsed */
+[data-testid="stSidebar"][aria-expanded="false"] {
+    min-width: 0px !important;
+    max-width: 0px !important;
+}
 .feature-card {
     background: white;
     padding: 15px;
@@ -94,7 +102,6 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- Constants & core logic (kept identical to your CLI logic) ----------
 PU_SEMESTER_CREDITS = [16, 16, 17, 18, 17, 17, 16, 18]
 
 
@@ -103,7 +110,6 @@ def calculate_current_gpa_from_cgpas(prev_cgpa, prev_credits, new_cgpa, current_
     return numerator / current_credits
 
 
-# ---------- Utility helpers ----------
 
 def dataframe_from_session():
     if "sem_table" not in st.session_state:
@@ -117,8 +123,6 @@ def download_link(df, filename="cgpa_report.csv"):
     towrite.seek(0)
     return towrite
 
-
-# ---------- Sidebar: global settings & quick actions ----------
 with st.sidebar:
     st.markdown("""<div class='header'><i class="fa-solid fa-calculator"></i><div class='app-title'>Oops My GPA 🤓</div></div>""", unsafe_allow_html=True)
     st.caption("A professional,  _user-first_ :blue[CGPA & GPA] and toolkit :sunglasses:")
@@ -171,7 +175,6 @@ with st.sidebar:
 
 
 
-# ---------- Main layout ----------
 col1, col2 = st.columns([1.6, 1])
 
 with col1:
@@ -196,7 +199,6 @@ with col1:
 
     st.markdown("\n---\n")
 
-    # ----------------- Mode 1: Semester GPA from subjects -----------------
     if mode == "Semester GPA — subject-level":
         st.subheader("Semester GPA — using Transcript ")
         st.markdown("👉 Enter grade points (GP) and credit hours for each subject. "
@@ -228,7 +230,6 @@ with col1:
                     st.session_state.sem_table = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
                     st.info("Saved semester GPA to session table — view it in the right panel.")
 
-    # ----------------- Mode 2: CGPA from semester GPAs -----------------
     elif mode == "CGPA from semester GPAs":
         st.subheader("CGPA from semester GPAs")
         st.markdown("👉 Enter GPA for each completed semester. Default credit hours are taken from PU scheme "
@@ -258,7 +259,6 @@ with col1:
                 rows = [{"Semester": i+1, "GPA": round(gpas[i],4), "Credits": int(crs[i])} for i in range(len(gpas))]
                 st.session_state.sem_table = pd.DataFrame(rows)
 
-    # ----------------- Mode 3: Current semester GPA finder -----------------
     elif mode == "Current semester GPA finder (CGPA based)":
         st.subheader("Current semester GPA finder — two modes")
         st.markdown("👉 Estimate your current semester GPA in two ways:\n"
@@ -301,7 +301,6 @@ with col1:
                         current_gpa = calculate_current_gpa_from_cgpas(prev_cgpa, total_cr, new_cgpa, current_credits)
                         st.success(f"Estimated GPA for semester {int(cur_sem)} = {current_gpa:.4f}")
 
-    # ----------------- Mode 4: One-step -----------------
     elif mode == "One-step: Semester GPA then update CGPA":
         st.subheader("One-step: compute semester GPA and update CGPA")
         st.markdown("👉 Estimate your current semester GPA in two ways:\n"
@@ -341,7 +340,6 @@ with col1:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ---------- Right column: session table, export, and visuals ----------
 with col2:
 
     st.markdown("""
@@ -385,7 +383,6 @@ with col2:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ---------- Footer help & tips ----------
 st.markdown("---")
 cols = st.columns(3)
 cols[0].markdown("**Tips**\n- Use the one-step mode to compute semester GPA from subjects and auto-update CGPA.")
@@ -411,4 +408,4 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ---------- End of app ----------
+
