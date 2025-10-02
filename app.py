@@ -233,7 +233,7 @@ with col1:
     """, unsafe_allow_html=True)
     st.markdown("""
     <div style="padding: 10px 15px 10px 15px; text-align: center;">
-        <span>A professional, user-friendly GPA & CGPA calculator — offering multiple calculation modes, smart credit handling, interactive semester tracking, CSV import/export, and GPA trend visualization for accurate performance management.</span>
+        <span>A professional, user-friendly GPA & CGPA calculator — offering multiple calculation modes, smart credit handling, interactive semester tracking, CSV import/export and GPA trend visualization for accurate performance management.</span>
     </div>
     """, unsafe_allow_html=True)
 
