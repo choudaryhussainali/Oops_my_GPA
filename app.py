@@ -397,7 +397,7 @@ with col2:
     """, unsafe_allow_html=True)
     df = dataframe_from_session()
     if df.empty:
-        st.info("No semester data saved yet. Use the left side calculators to add results.")
+        st.info("No semester data saved yet. Perform the calculations to add results.")
     else:
         st.dataframe(df.sort_values(by="Semester"))
         # Quick stats
@@ -456,5 +456,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st_javascript("alert('⚠️ must put a Mail if you got any error');") 
+
 
 
