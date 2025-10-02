@@ -29,13 +29,13 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
     max-width: 0px !important;
 }
 .feature-card {
-    background: white;
+    background: #1f2937;
     padding: 15px 15px 15px 30px;
     margin-top: -3rem;
     text-align: center;
     color: black;
     border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
     border: 1px solid #e1e8ed;
     margin-bottom: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -48,13 +48,13 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
     box-shadow: 0 15px 45px rgba(0,0,0,0.15);
 }
 .feature-card1 {
-    background: white;
+    background: #1f2937;
     padding: 15px 15px 15px 30px;
     margin-top: -3rem;
     text-align: center;
     color: black;
     border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
     border: 1px solid #e1e8ed;
     margin-bottom: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -123,25 +123,25 @@ body {background: linear-gradient(180deg,#ffffff,#f7fbff);}
 @media (max-width: 768px) {
         
     .feature-card1 {
-        background: white;
+        background: #1f2937;
         padding: 15px 15px 15px 35px;
         margin-top: 0rem;
         text-align: center;
         color: black;
         border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.6);
         border: 1px solid #e1e8ed;
         margin-bottom: 1.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
     .feature-card {
-        background: white;
+        background: #1f2937;
         padding: 15px 15px 15px 35px;
         margin-top: -3rem;
         text-align: center;
         color: black;
         border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.6);
         border: 1px solid #e1e8ed;
         margin-bottom: 1.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -456,6 +456,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st_javascript("alert('⚠️ must put a Mail if you got any error');") 
+
 
 
 
