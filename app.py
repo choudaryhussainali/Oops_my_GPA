@@ -173,7 +173,7 @@ def download_link(df, filename="cgpa_report.csv"):
 
 with st.sidebar:
     st.markdown("""<div class='header'><i class="fa-solid fa-calculator"></i><div class='app-title'>Oops My GPA 🤓</div></div>""", unsafe_allow_html=True)
-    st.caption("A professional,  _user-first_ :blue[CGPA & GPA] and toolkit :sunglasses:")
+    st.caption("A professional,  _user-first_ :blue[CGPA & GPA] toolkit :sunglasses:")
     st.markdown("""
         <div class="social-links">
                 <a href="https://linkedin.com/in/ch-hussain-ali" class="social-btn" style="font-size:1.5rem;" target="_blank">
