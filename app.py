@@ -353,9 +353,20 @@ with col1:
                 gpas = []
                 crs = []
                 for sem in range(1, int(cur_sem)):
-                    cols = st.columns([2,1])
-                    gpa = cols[0].number_input(f"GPA Sem {sem}", min_value=0.0, value=3.0, step=0.01, key=f"prev_gpa_{sem}")
-                    credit = cols[1].number_input(f"Credits Sem {sem}", min_value=0, value=PU_SEMESTER_CREDITS[sem-1], key=f"prev_cr_{sem}")
+                    if preset == "Custom - manual":
+                        cols = st.columns([2,1])
+                        gpa = cols[0].number_input(
+                            f"GPA Sem {sem}", min_value=0.0, value=3.0, step=0.01, key=f"prev_gpa_{sem}"
+                        )
+                        credit = cols[1].number_input(
+                            f"Credits Sem {sem}", min_value=0, value=PU_SEMESTER_CREDITS[sem-1], key=f"prev_cr_{sem}"
+                        )
+                    else:
+                        gpa = st.number_input(
+                            f"GPA Sem {sem} ― ( Credits = {PU_SEMESTER_CREDITS[sem-1]} )",
+                            min_value=0.0, value=3.0, step=0.01, key=f"prev_gpa_{sem}"
+                        )
+                        credit = PU_SEMESTER_CREDITS[sem-1]
                     gpas.append(gpa)
                     crs.append(credit)
                 new_cgpa = st.number_input("New CGPA (after this semester)", min_value=0.0, value=3.0)
@@ -554,6 +565,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st_javascript("alert('⚠️ must put a Mail if you got any error');") 
+
 
 
 
