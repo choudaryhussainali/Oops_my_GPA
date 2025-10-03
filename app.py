@@ -568,7 +568,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st_javascript("alert('⚠️ must put a Mail if you encounter any error');") 
+st_javascript("alert('⚠️ Put a mail if you encounter any error');") 
+
 
 
 
