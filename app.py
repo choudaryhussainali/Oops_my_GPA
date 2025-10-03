@@ -444,14 +444,14 @@ with col1:
         with st.form(key="one_step_form"):
             for i in range(n):
                 st.number_input(
-                    f"GP - Subject {i+1}",
+                    f"Grade Points (GP) - Subject {i+1}",
                     min_value=0.0,
                     value=3.0,
                     step=0.1,
                     key=f"one_gp_{cur_sem}_{i}"
                 )
                 st.number_input(
-                    f"CR - Subject {i+1}",
+                    f"CH - Subject {i+1}",
                     min_value=0,
                     value=3,
                     step=1,
@@ -554,6 +554,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st_javascript("alert('⚠️ must put a Mail if you got any error');") 
+
 
 
 
