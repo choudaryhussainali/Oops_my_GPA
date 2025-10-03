@@ -247,36 +247,58 @@ with col1:
 
     st.markdown("\n---\n")
 
+    # ----------------- Mode 1: Semester GPA from subjects -----------------
     if mode == "Semester GPA — subject-level":
         st.subheader("Semester GPA — using Transcript ")
         st.markdown("👉 Enter grade points (GP) and credit hours for each subject. "
             "The app will calculate your semester GPA based on weighted average.")
         
+        cur_sem = st.number_input("Current semester number", min_value=1, max_value=8, value=1, key="subject_cur_sem")
+        n = int(st.number_input("Number of subjects", min_value=1, value=5, key="subject_n"))
+
+        # Form collects inputs only — no calculations here
         with st.form(key="form_subjects"):
-            cur_sem = st.number_input("Current semester number", min_value=1, max_value=8, value=1)
-            n = st.number_input("Number of subjects", min_value=1, value=5)
-            cols = st.columns((2,1))
-            subjects = []
-            total_qp = 0.0
-            total_cr = 0
-            for i in range(int(n)):
+            subjects = []  # collects (gp, cr) tuples but we DON'T compute totals here
+            for i in range(n):
                 with st.expander(f"Subject {i+1}", expanded=False):
-                    gp = st.number_input(f"  Grade Points — Subject {i+1}", min_value=0.0, value=3.0, step=0.1, key=f"gp_{i}")
-                    cr = st.number_input(f"  Credit Hours — Subject {i+1}", min_value=0, value=3, step=1, key=f"cr_{i}")
-                    total_qp += gp * cr
-                    total_cr += cr
+                    gp = st.number_input(
+                        f"Grade Points — Subject {i+1}",
+                        min_value=0.0,
+                        value=3.0,
+                        step=0.1,
+                        key=f"gp_sem{cur_sem}_{i}"
+                    )
+                    cr = st.number_input(
+                        f"Credit Hours — Subject {i+1}",
+                        min_value=0,
+                        value=3,
+                        step=1,
+                        key=f"cr_sem{cur_sem}_{i}"
+                    )
+                    # only collect values (no running sums)
+                    subjects.append((gp, cr))
+
             submitted = st.form_submit_button("Calculate Semester GPA")
-            if submitted:
-                if total_cr == 0:
-                    st.error("Total credit hours cannot be zero.")
-                else:
-                    sem_gpa = total_qp / total_cr
-                    st.success(f"Semester GPA = {sem_gpa:.4f}  (Total credits = {total_cr})")
-                    # store in session table
-                    df = dataframe_from_session()
-                    new_row = {"Semester": int(cur_sem), "GPA": round(sem_gpa,4), "Credits": int(total_cr)}
-                    st.session_state.sem_table = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-                    st.info("Saved semester GPA to session table — view it in the right panel.")
+
+        # Perform calculation only after submit
+        if submitted:
+            # defensive checks in case user manipulated something
+            total_qp = sum(gp * cr for gp, cr in subjects)
+            total_cr = sum(cr for _, cr in subjects)
+
+            if total_cr == 0:
+                st.error("Total credit hours cannot be zero.")
+            else:
+                sem_gpa = total_qp / total_cr
+                st.success(f"Semester GPA = {sem_gpa:.4f}  (Total credits = {total_cr})")
+
+                # save in session table (replace existing row for same semester)
+                df = dataframe_from_session()
+                new_row = {"Semester": int(cur_sem), "GPA": round(sem_gpa, 4), "Credits": int(total_cr)}
+                df = df[df["Semester"] != int(cur_sem)]  # remove old if present
+                st.session_state.sem_table = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                st.info("Saved semester GPA to session table — view it in the Chart panel.")
+    # ------------------ End block ------------------
 
     elif mode == "CGPA from semester GPAs":
         st.subheader("CGPA from semester GPAs")
@@ -349,42 +371,118 @@ with col1:
                         current_gpa = calculate_current_gpa_from_cgpas(prev_cgpa, total_cr, new_cgpa, current_credits)
                         st.success(f"Estimated GPA for semester {int(cur_sem)} = {current_gpa:.4f}")
 
+    # ----------------- Mode 4: One-step (advanced, safe) -----------------
     elif mode == "One-step: Semester GPA then update CGPA":
         st.subheader("One-step: compute semester GPA and update CGPA")
-        st.markdown("👉 Estimate your current semester GPA in two ways:\n"
-                "- Mode A: Enter previous CGPA and new CGPA.\n"
-                "- Mode B: Enter all previous semester GPAs, then new CGPA. "
-                "The app will back-calculate your semester GPA.")
-        cur_sem = st.number_input("Current semester number", min_value=1, max_value=8, value=1)
+        st.markdown(
+            "📌 In this mode, you only need to enter:\n"
+            "- The **Grade Points (GP)** and **Credit Hours (CR)** of each subject in the current semester.\n"
+            "- If this is **not your first semester**, also enter your **previous CGPA**.\n\n"
+            "✅ The app will then calculate:\n"
+            "1. Your **current semester GPA**.\n"
+            "2. Your **updated overall CGPA** after this semester.\n\n"
+            "⚡ This mode is fast and simple — no need to enter all past semester details manually."
+        )
+
+        # stable selectors outside the form (keeps keys stable on reruns)
+        cur_sem = st.number_input(
+            "Current semester number", min_value=1, max_value=8, value=1, key="one_cur_sem"
+        )
+        n = int(st.number_input(
+            "Number of subjects in this semester", min_value=1, value=5, key="one_n"
+        ))
+
+        # Clear stale stored result if user changed semester or subject count
+        if st.session_state.get("one_step_last_config") != (cur_sem, n):
+            st.session_state.pop("one_step_result", None)
+            st.session_state["one_step_last_config"] = (cur_sem, n)
+
+        # Callback — runs ONLY when the form button is clicked
+        def _compute_one_step(cur_sem_arg, n_arg):
+            # read inputs from session_state (values are pushed into session_state by Streamlit on submit)
+            gps = [st.session_state.get(f"one_gp_{cur_sem_arg}_{i}", 0.0) for i in range(n_arg)]
+            crs = [st.session_state.get(f"one_cr_{cur_sem_arg}_{i}", 0) for i in range(n_arg)]
+
+            total_qp = sum(g * c for g, c in zip(gps, crs))
+            total_cr = sum(crs)
+
+            if total_cr == 0:
+                st.session_state["one_step_result"] = {"error": "Total credit hours cannot be zero.", "cur_sem": cur_sem_arg}
+                return
+
+            sem_gpa = total_qp / total_cr
+
+            if cur_sem_arg == 1:
+                # first semester => GPA == CGPA
+                st.session_state["one_step_result"] = {
+                    "cur_sem": cur_sem_arg,
+                    "sem_gpa": sem_gpa,
+                    "new_cgpa": sem_gpa,
+                    "total_cr": total_cr
+                }
+            else:
+                prev_cgpa = st.session_state.get("one_prev_cgpa", 0.0)
+                prev_credits = sum(PU_SEMESTER_CREDITS[:cur_sem_arg-1])
+                current_credits = PU_SEMESTER_CREDITS[cur_sem_arg-1]
+
+                new_cgpa = ((prev_cgpa * prev_credits) + (sem_gpa * current_credits)) / (prev_credits + current_credits)
+
+                st.session_state["one_step_result"] = {
+                    "cur_sem": cur_sem_arg,
+                    "sem_gpa": sem_gpa,
+                    "new_cgpa": new_cgpa,
+                    "total_cr": total_cr,
+                    "current_credits": current_credits
+                }
+
+                # Update saved semester table (replace existing entry if present)
+                df = dataframe_from_session()
+                new_row = {"Semester": int(cur_sem_arg), "GPA": round(sem_gpa, 4), "Credits": int(current_credits)}
+                st.session_state.sem_table = pd.concat([df[df["Semester"] != int(cur_sem_arg)], pd.DataFrame([new_row])], ignore_index=True)
+
+        # Render the form (only rendering — no calculations here)
         with st.form(key="one_step_form"):
-            n = st.number_input("Number of subjects in this semester", min_value=1, value=5)
-            total_qp = 0.0
-            total_cr = 0
-            for i in range(int(n)):
-                gp = st.number_input(f"GP - Subject {i+1}", min_value=0.0, value=3.0, key=f"one_gp_{i}")
-                cr = st.number_input(f"CR - Subject {i+1}", min_value=0, value=3, key=f"one_cr_{i}")
-                total_qp += gp*cr
-                total_cr += cr
-            prev_cgpa = None
+            for i in range(n):
+                st.number_input(
+                    f"GP - Subject {i+1}",
+                    min_value=0.0,
+                    value=3.0,
+                    step=0.1,
+                    key=f"one_gp_{cur_sem}_{i}"
+                )
+                st.number_input(
+                    f"CR - Subject {i+1}",
+                    min_value=0,
+                    value=3,
+                    step=1,
+                    key=f"one_cr_{cur_sem}_{i}"
+                )
+
             if cur_sem != 1:
-                prev_cgpa = st.number_input("Previous CGPA (till last semester)", min_value=0.0, value=3.0)
-            submitted = st.form_submit_button("Compute & Update CGPA")
-            if submitted:
-                if total_cr == 0:
-                    st.error("Total credit hours cannot be zero.")
+                st.number_input(
+                    "Previous CGPA (till last semester)",
+                    min_value=0.0,
+                    value=3.0,
+                    step=0.01,
+                    key="one_prev_cgpa"
+                )
+
+            # Attach the callback to the submit button — computation only happens inside the callback
+            st.form_submit_button("Compute & Update CGPA", on_click=_compute_one_step, args=(cur_sem, n))
+
+        # Display result if available (read-only display from session_state)
+        res = st.session_state.get("one_step_result")
+        if res and res.get("cur_sem") == cur_sem:
+            if "error" in res:
+                st.error(res["error"])
+            else:
+                if cur_sem == 1:
+                    st.success(f"Semester 1 GPA = {res['sem_gpa']:.4f}\nCGPA = {res['new_cgpa']:.4f}")
                 else:
-                    sem_gpa = total_qp / total_cr
-                    if cur_sem == 1:
-                        st.success(f"Semester 1 GPA = {sem_gpa:.4f}\nCGPA = {sem_gpa:.4f}")
-                    else:
-                        prev_credits = sum(PU_SEMESTER_CREDITS[:int(cur_sem)-1])
-                        current_credits = PU_SEMESTER_CREDITS[int(cur_sem)-1]
-                        new_cgpa = (prev_cgpa * prev_credits + sem_gpa * current_credits) / (prev_credits + current_credits)
-                        st.success(f"Semester GPA = {sem_gpa:.4f}\nUpdated CGPA after sem {int(cur_sem)} = {new_cgpa:.4f}")
-                        # save
-                        df = dataframe_from_session()
-                        new_row = {"Semester": int(cur_sem), "GPA": round(sem_gpa,4), "Credits": int(current_credits)}
-                        st.session_state.sem_table = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                    st.success(
+                        f"Semester GPA = {res['sem_gpa']:.4f}\n"
+                        f"Updated CGPA after sem {cur_sem} = {res['new_cgpa']:.4f}"
+                    )
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -456,6 +554,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st_javascript("alert('⚠️ must put a Mail if you got any error');") 
+
 
 
 
