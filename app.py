@@ -236,7 +236,12 @@ with col1:
         <span>A professional, user-friendly GPA & CGPA calculator — offering multiple calculation modes, smart credit handling, interactive semester tracking, CSV import/export and GPA trend visualization for accurate performance management.</span>
     </div>
     """, unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("</div>", unsafe_allow_html=True)
+    # ---------- Main interactive panel ----------
 
+    st.warning('Choose carefully !', icon="🔥", width= 300)
+    st.toast("Plz email if you encounter any error!",  icon="⚠️")
     st.markdown("### Choose calculation mode")
     mode = st.selectbox("Mode:", [
         "Current semester GPA finder (CGPA based)",
@@ -564,7 +569,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st_javascript("alert('⚠️ must put a Mail if you got any error');") 
 
 
 
