@@ -241,7 +241,6 @@ with col1:
     # ---------- Main interactive panel ----------
 
     st.warning('Choose carefully !', icon="🔥", width= 300)
-    st.toast("Plz email if you encounter any error!",  icon="⚠️")
     st.markdown("### Choose calculation mode")
     mode = st.selectbox("Mode:", [
         "Current semester GPA finder (CGPA based)",
@@ -568,6 +567,8 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+st_javascript("alert('⚠️ must put a Mail if you encounter any error');") 
 
 
 
